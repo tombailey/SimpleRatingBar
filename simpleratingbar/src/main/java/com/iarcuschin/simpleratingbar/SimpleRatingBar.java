@@ -74,6 +74,7 @@ public class SimpleRatingBar extends View {
   private @ColorInt int pressedBackgroundColor;
   private @ColorInt int pressedStarBackgroundColor;
   private int numberOfStars;
+  private int minNumberOfStars;
   private float starsSeparation;
   private float desiredStarSize;
   private float maxStarSize;
@@ -180,6 +181,7 @@ public class SimpleRatingBar extends View {
     pressedStarBackgroundColor = arr.getColor(R.styleable.SimpleRatingBar_srb_pressedStarBackgroundColor, starBackgroundColor);
     pressedBackgroundColor = arr.getColor(R.styleable.SimpleRatingBar_srb_pressedBackgroundColor, backgroundColor);
 
+    minNumberOfStars = arr.getInteger(R.styleable.SimpleRatingBar_srb_minNumberOfStars, 0);
     numberOfStars = arr.getInteger(R.styleable.SimpleRatingBar_srb_numberOfStars, 5);
 
     starsSeparation = arr.getDimensionPixelSize(R.styleable.SimpleRatingBar_srb_starsSeparation, (int)valueToPixels(4, Dimension.DP));
@@ -206,6 +208,9 @@ public class SimpleRatingBar extends View {
   private void validateAttrs() {
     if (numberOfStars <= 0) {
       throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than 0", numberOfStars));
+    }
+    if (minNumberOfStars <= 0) {
+      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for minNumberOfStars. Found %d, but should be greater than 0", minNumberOfStars));
     }
     if (desiredStarSize != Integer.MAX_VALUE && maxStarSize != Integer.MAX_VALUE && desiredStarSize
         > maxStarSize) {
@@ -1220,9 +1225,9 @@ public class SimpleRatingBar extends View {
    * @return
    */
   private float normalizeRating(float rating) {
-    if (rating < 1) {
-      Log.w("SimpleRatingBar", String.format("Assigned rating is less than 1 (%f < 1), I will set it to exactly 1", rating));
-      return 1;
+    if (rating < minNumberOfStars) {
+      Log.w("SimpleRatingBar", String.format("Assigned rating is less than " + minNumberOfStars + " (%f < " + minNumberOfStars + "), I will set it to exactly " + minNumberOfStars, rating));
+      return minNumberOfStars;
     } else if (rating > numberOfStars) {
       Log.w("SimpleRatingBar", String.format("Assigned rating is greater than numberOfStars (%f > %d), I will set it to exactly numberOfStars", rating, numberOfStars));
       return numberOfStars;
