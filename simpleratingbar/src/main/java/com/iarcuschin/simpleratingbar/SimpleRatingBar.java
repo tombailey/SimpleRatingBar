@@ -650,25 +650,23 @@ public class SimpleRatingBar extends View {
 
     // we know that touch was inside starsTouchSpace, but it might be outside starsDrawingSpace
     if (x < starsDrawingSpace.left) {
-      rating = 0;
+      setRating(0);
       return;
     } else if (x >  starsDrawingSpace.right) {
-      rating = numberOfStars;
+      setRating(numberOfStars);
       return;
     }
 
     x = x - starsDrawingSpace.left;
     // reduce the width to allow the user reach the top and bottom values of rating (0 and numberOfStars)
-    rating = (float)numberOfStars / starsDrawingSpace.width() * x;
+    float rating = (float)numberOfStars / starsDrawingSpace.width() * x;
 
     // correct rating in case step size is present
     float mod = rating % stepSize;
     if (mod < stepSize/4) {
-      rating = rating - mod;
-      rating = Math.max(0, rating);
+      setRating(Math.max(0, rating - mod));
     } else {
-      rating =  rating - mod + stepSize;
-      rating = Math.min(numberOfStars, rating);
+      setRating(Math.min(numberOfStars, rating - mod + stepSize));
     }
   }
   
@@ -903,14 +901,14 @@ public class SimpleRatingBar extends View {
 
   /**
    * Sets number of stars.
-   * It also sets the rating to zero.
-   * Throws IllegalArgumentException if provided value is less or equal than zero.
+   * It also sets the rating to the minimum number of stars.
+   * Throws IllegalArgumentException if provided value is less than the minimum number of stars.
    * @param numberOfStars
    */
   public void setNumberOfStars(int numberOfStars) {
     this.numberOfStars = numberOfStars;
-    if (numberOfStars < 1) {
-      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than 1", numberOfStars));
+    if (numberOfStars < minNumberOfStars) {
+      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than or equal to " + minNumberOfStars, numberOfStars));
     }
     this.rating = 1;
     // force re-calculating the layout dimension
