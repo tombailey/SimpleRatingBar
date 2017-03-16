@@ -725,7 +725,7 @@ public class SimpleRatingBar extends View {
 
   /**
    * Sets rating.
-   * If provided value is less than 0, rating will be set to 0.
+   * If provided value is less than 1, rating will be set to 1.
    * * If provided value is greater than numberOfStars, rating will be set to numberOfStars.
    * @param rating
    */
@@ -904,10 +904,10 @@ public class SimpleRatingBar extends View {
    */
   public void setNumberOfStars(int numberOfStars) {
     this.numberOfStars = numberOfStars;
-    if (numberOfStars <= 0) {
-      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than 0", numberOfStars));
+    if (numberOfStars < 1) {
+      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than 1", numberOfStars));
     }
-    this.rating = 0;
+    this.rating = 1;
     // force re-calculating the layout dimension
     requestLayout();
     generateInternalCanvas(getWidth(), getHeight());
@@ -1220,9 +1220,9 @@ public class SimpleRatingBar extends View {
    * @return
    */
   private float normalizeRating(float rating) {
-    if (rating < 0) {
-      Log.w("SimpleRatingBar", String.format("Assigned rating is less than 0 (%f < 0), I will set it to exactly 0", rating));
-      return 0;
+    if (rating < 1) {
+      Log.w("SimpleRatingBar", String.format("Assigned rating is less than 1 (%f < 1), I will set it to exactly 1", rating));
+      return 1;
     } else if (rating > numberOfStars) {
       Log.w("SimpleRatingBar", String.format("Assigned rating is greater than numberOfStars (%f > %d), I will set it to exactly numberOfStars", rating, numberOfStars));
       return numberOfStars;
