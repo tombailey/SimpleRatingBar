@@ -206,11 +206,11 @@ public class SimpleRatingBar extends View {
    * Warnings will be logged to LogCat.
    */
   private void validateAttrs() {
-    if (numberOfStars <= 0) {
-      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than 0", numberOfStars));
+    if (numberOfStars < 0) {
+      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for numberOfStars. Found %d, but should be greater than or equal to 0", numberOfStars));
     }
-    if (minNumberOfStars <= 0) {
-      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for minNumberOfStars. Found %d, but should be greater than 0", minNumberOfStars));
+    if (minNumberOfStars < 0) {
+      throw new IllegalArgumentException(String.format("SimpleRatingBar initialized with invalid value for minNumberOfStars. Found %d, but should be greater than or equal to 0", minNumberOfStars));
     }
     if (desiredStarSize != Integer.MAX_VALUE && maxStarSize != Integer.MAX_VALUE && desiredStarSize
         > maxStarSize) {
