@@ -599,7 +599,7 @@ public class SimpleRatingBar extends View {
 
   @Override
   public boolean onTouchEvent(MotionEvent event) {
-    if (isIndicator  || (ratingAnimator != null && ratingAnimator.isRunning())) {
+    if (ratingAnimator != null && ratingAnimator.isRunning()) {
       return false;
     }
 
@@ -610,27 +610,34 @@ public class SimpleRatingBar extends View {
         // check if action is performed on stars
         if (starsTouchSpace.contains(event.getX(), event.getY())) {
           touchInProgress = true;
-          setNewRatingFromTouch(event.getX(), event.getY());
+
+          if (!isIndicator) {
+            setNewRatingFromTouch(event.getX(), event.getY());
+          }
         } else {
-          if (touchInProgress && ratingListener != null) {
+          if (touchInProgress && ratingListener != null && !isIndicator) {
+            setNewRatingFromTouch(event.getX(), event.getY());
             ratingListener.onRatingChanged(this, rating, true);
           }
           touchInProgress = false;
-          return false;
         }
         break;
       case MotionEvent.ACTION_UP:
-        setNewRatingFromTouch(event.getX(), event.getY());
+        if (!isIndicator) {
+          setNewRatingFromTouch(event.getX(), event.getY());
+        }
         if (clickListener != null) {
           clickListener.onClick(this);
         }
+        break;
       case MotionEvent.ACTION_CANCEL:
-        if (ratingListener != null) {
+        if (ratingListener != null && !isIndicator) {
           ratingListener.onRatingChanged(this, rating, true);
         }
         touchInProgress = false;
         break;
-
+      default:
+          return false;
     }
 
     invalidate();
